@@ -1,6 +1,8 @@
 import Link from 'next/link'
+import { useAuth } from '@/components/AuthProvider'
 
 export default function Navbar() {
+  const { user, login, logout } = useAuth?.() || {}
   return (
     <nav className="bg-white shadow-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -42,6 +44,21 @@ export default function Navbar() {
             >
               Add Detailed Trip
             </Link>
+            {user ? (
+              <button
+                onClick={logout}
+                className="text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+              >
+                Logout
+              </button>
+            ) : (
+              <Link 
+                href="/login" 
+                className="text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+              >
+                Login
+              </Link>
+            )}
           </div>
         </div>
       </div>

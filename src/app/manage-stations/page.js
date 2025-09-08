@@ -3,8 +3,12 @@
 import { useState, useEffect } from 'react'
 import Navbar from '@/components/Navbar'
 import { supabase } from '@/lib/supabase'
+import { useAuth } from '@/components/AuthProvider'
+import { useRouter } from 'next/navigation'
 
 export default function ManageStationsPage() {
+  const { user, loading } = useAuth()
+  const router = useRouter()
   const [stations, setStations] = useState([])
   const [newStation, setNewStation] = useState({ stationName: '', location: '' })
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -13,6 +17,12 @@ export default function ManageStationsPage() {
   useEffect(() => {
     fetchStations()
   }, [])
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push('/login')
+    }
+  }, [user, loading, router])
 
   const fetchStations = async () => {
     try {
@@ -62,6 +72,13 @@ export default function ManageStationsPage() {
       <Navbar />
       
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {(!user || loading) && (
+          <div className="bg-white rounded-lg shadow-md p-8 text-center">
+            <div className="text-6xl mb-4">🔐</div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">Login required</h3>
+            <p className="text-gray-600">Redirecting to login...</p>
+          </div>
+        )}
         <div className="bg-white rounded-lg shadow-md p-8">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-gray-900 mb-4">

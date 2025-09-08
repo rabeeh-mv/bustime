@@ -84,6 +84,24 @@ CREATE POLICY "Allow public insert on bus_stations" ON bus_stations
 CREATE POLICY "Allow public insert on trip_timings" ON trip_timings
   FOR INSERT WITH CHECK (true);
 
+-- Users (linked to Firebase UID)
+CREATE TABLE IF NOT EXISTS app_users (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  firebase_uid TEXT UNIQUE NOT NULL,
+  email TEXT,
+  display_name TEXT,
+  photo_url TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+ALTER TABLE app_users ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Allow public read access on app_users" ON app_users
+  FOR SELECT USING (true);
+
+CREATE POLICY "Allow public insert on app_users" ON app_users
+  FOR INSERT WITH CHECK (true);
+
 -- Insert some sample data
 INSERT INTO routes (from_location, to_location) VALUES
   ('Kannur', 'Malappuram'),
